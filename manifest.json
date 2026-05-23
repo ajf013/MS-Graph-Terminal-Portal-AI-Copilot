@@ -1,0 +1,22 @@
+{
+  "short_name": "GraphShell",
+  "name": "Microsoft Graph Terminal Portal",
+  "description": "An interactive retro-futuristic terminal interface for Microsoft Graph and Azure AD.",
+  "icons": [
+    {
+      "src": "https://img.icons8.com/nolan/256/terminal.png",
+      "type": "image/png",
+      "sizes": "256x256"
+    },
+    {
+      "src": "https://img.icons8.com/nolan/512/terminal.png",
+      "type": "image/png",
+      "sizes": "512x512"
+    }
+  ],
+  "start_url": "./index.html",
+  "background_color": "#0d0f12",
+  "theme_color": "#00f0ff",
+  "display": "standalone",
+  "orientation": "any"
+}

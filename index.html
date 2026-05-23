@@ -1,0 +1,462 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>GraphShell - MS Graph Terminal Portal</title>
+  
+  <!-- SEO & PWA Meta Tags -->
+  <meta name="description" content="An interactive, high-fidelity terminal portal and AI Copilot for Microsoft Graph API and Azure AD directory services.">
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#00f0ff">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <link rel="icon" type="image/png" href="logo.png">
+  <link rel="apple-touch-icon" href="logo.png">
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@300;400;600&family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+  
+  <link rel="stylesheet" href="index.css">
+  <link rel="stylesheet" href="Footer/Footer.css">
+</head>
+<body>
+  <!-- CRT Glass Overlay Effect -->
+  <div class="crt-overlay"></div>
+  <div class="scanlines"></div>
+
+  <!-- App Wrapper -->
+  <div class="app-container">
+    
+    <!-- Global Header -->
+    <header class="app-header">
+      <div class="header-logo">
+        <img src="logo.png" alt="GraphShell Logo" class="logo-image">
+        <h1>GraphShell <span class="version">v1.1.0</span></h1>
+      </div>
+      <div class="header-stats">
+        <div class="stat-badge connection-status offline" id="connection-indicator">DISCONNECTED</div>
+        <div class="stat-badge tenant-name" id="tenant-indicator">NO SESSION</div>
+        <div class="stat-badge clock" id="clock-display">00:00:00</div>
+      </div>
+      <div class="header-actions">
+        <button class="connect-btn" id="header-connect-btn">Connect Account</button>
+        <button class="logout-btn" id="header-logout-btn" title="Sign Out" style="display: none;">
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg>
+        </button>
+        <!-- Settings button is hidden from public UI; accessible via terminal 'config' command -->
+        <button class="settings-btn" id="open-settings-btn" title="Open Settings" style="display: none;">
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
+        </button>
+      </div>
+    </header>
+
+    <!-- Main Workspace Splitter -->
+    <main class="app-body">
+      
+      <!-- Left Pane: Terminal CLI -->
+      <section class="terminal-pane" id="terminal-section">
+        <div class="terminal-header">
+          <span class="terminal-dot red"></span>
+          <span class="terminal-dot yellow"></span>
+          <span class="terminal-dot green"></span>
+          <span class="terminal-title">bash - graphshell@contoso.onmicrosoft.com</span>
+        </div>
+        <div class="terminal-history" id="terminal-history-log">
+          <!-- Boot sequences go here -->
+          <div class="log-line system">Microsoft Graph Interactive Shell [Version 1.0.4]</div>
+          <div class="log-line system">(c) Microsoft Corporation. All rights reserved.</div>
+          <div class="log-line success">Initializing tenant mock data database... SUCCESS.</div>
+          <div class="log-line info">Type 'help' to see list of available commands or 'login' to sign in.</div>
+          <div class="log-line"></div>
+          
+          <div class="terminal-input-container">
+            <span class="prompt-symbol">graphshell$</span>
+            <input type="text" id="terminal-input" autofocus autocomplete="off" spellcheck="false">
+          </div>
+        </div>
+      </section>
+
+      <!-- Right Pane: Collapsible Visual Explorer -->
+      <section class="explorer-pane" id="explorer-section">
+        
+        <!-- Tab Selectors -->
+        <div class="explorer-tabs">
+          <button class="tab-btn active" id="tab-learn" data-target="panel-learn">
+            <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="tab-icon"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path></svg>
+            Learn Graph
+          </button>
+          <button class="tab-btn" id="tab-visual" data-target="panel-visual">
+            <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="tab-icon"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><line x1="9" y1="3" x2="9" y2="21"></line></svg>
+            Visual Explorer
+          </button>
+          <button class="tab-btn" id="tab-json" data-target="panel-json">
+            <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="tab-icon"><polyline points="16 18 22 12 16 6"></polyline><polyline points="8 6 2 12 8 18"></polyline></svg>
+            JSON Inspector
+          </button>
+          <button class="tab-btn" id="tab-ai" data-target="panel-ai">
+            <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="tab-icon"><polygon points="12 2 2 7 12 12 22 7 12 2"></polygon><polyline points="2 17 12 22 22 17"></polyline><polyline points="2 12 12 17 22 12"></polyline></svg>
+            Azure AI Copilot
+          </button>
+        </div>
+
+        <!-- Panel Contents -->
+        <div class="explorer-content">
+          
+          <!-- Learn Graph Panel (Default) -->
+          <div class="tab-panel active" id="panel-learn">
+            <div class="learn-panel-container">
+              <div class="learn-header">
+                <h2>Microsoft Graph Academy & Sandbox</h2>
+                <p>Welcome to the interactive Graph portal. Execute REST queries to explore and learn how the Microsoft Graph API exposes Microsoft 365 services.</p>
+              </div>
+
+              <!-- Real-time API Transaction Logger -->
+              <div class="api-logger-card" id="api-logger-widget">
+                <div class="api-logger-header">
+                  <span class="api-logger-badge">LAST API TRANSACTION</span>
+                  <span class="api-logger-status" id="api-log-status">NO ACTIVE QUERY</span>
+                </div>
+                <div class="api-logger-body">
+                  <div class="log-row"><span class="label">Method:</span> <span class="value" id="api-log-method">--</span></div>
+                  <div class="log-row"><span class="label">Endpoint:</span> <span class="value code-font" id="api-log-url">--</span></div>
+                  <div class="log-row"><span class="label">Required Scopes:</span> <span class="value code-font" id="api-log-scopes">--</span></div>
+                </div>
+                <div class="api-logger-footer">
+                  <a href="https://learn.microsoft.com/graph/api/overview" target="_blank" class="learn-more-link" id="api-log-doc">Microsoft Graph Documentation &rarr;</a>
+                </div>
+              </div>
+
+              <!-- Section 1: Architecture Overview -->
+              <div class="learn-section-divider">
+                <h3>1. Core Architecture & Concepts</h3>
+              </div>
+              
+              <div class="learn-docs-grid">
+                <div class="doc-box">
+                  <h5>What is Microsoft Graph?</h5>
+                  <p>Microsoft Graph is a unified REST API endpoint (<code>https://graph.microsoft.com</code>) providing access to data across Microsoft 365, Windows 11, and Enterprise Mobility + Security services. It consolidates multiple legacy APIs into a single gateway.</p>
+                </div>
+                <div class="doc-box">
+                  <h5>Delegated vs Application Permissions</h5>
+                  <p><strong>Delegated permissions</strong> are used by apps that have a signed-in user present. The app can only act on behalf of the signed-in user. <strong>Application permissions</strong> are used by background daemons or services without any signed-in user (requires tenant administrator consent).</p>
+                </div>
+                <div class="doc-box">
+                  <h5>Managing Permissions & Scope Consent</h5>
+                  <p>Scopes are requested during login. To add scopes, request them in your auth request (e.g. <code>Mail.Read</code>). To remove or revoke granted permissions from the app, users must sign in to their <strong>Microsoft My Apps portal</strong> at <a href="https://myapplications.microsoft.com" target="_blank" style="color: var(--accent-amber);">myapplications.microsoft.com</a> and select "Revoke Permissions".</p>
+                </div>
+                <div class="doc-box">
+                  <h5>API Versions: v1.0 vs Beta</h5>
+                  <p>The <code>v1.0</code> endpoint includes APIs that are ready for production use. The <code>beta</code> endpoint (e.g. <code>/beta/me</code>) contains APIs that are currently in preview and may undergo breaking changes before release.</p>
+                </div>
+              </div>
+
+              <!-- Section 2: Interactive Sandbox Directory -->
+              <div class="learn-section-divider">
+                <h3>2. Interactive API Endpoint Directory</h3>
+              </div>
+
+              <div class="lessons-list">
+                
+                <div class="lesson-card">
+                  <div class="lesson-num">01</div>
+                  <div class="lesson-detail">
+                    <h4>Get Authenticated User Profile</h4>
+                    <p class="lesson-endpoint">GET /v1.0/me</p>
+                    <p class="lesson-desc">Retrieves the primary profile metadata of the signed-in user, such as displayName, jobTitle, mail, and officeLocation.</p>
+                    <div class="lesson-meta">
+                      <span class="scope-bubble">User.Read</span>
+                      <button class="try-cmd-btn" data-cmd="me">Try 'me'</button>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="lesson-card">
+                  <div class="lesson-num">02</div>
+                  <div class="lesson-detail">
+                    <h4>List Users in Tenant Directory</h4>
+                    <p class="lesson-endpoint">GET /v1.0/users</p>
+                    <p class="lesson-desc">Queries organization members in the tenant. Demonstrates directory searching and group structures.</p>
+                    <div class="lesson-meta">
+                      <span class="scope-bubble">User.ReadBasic.All</span>
+                      <button class="try-cmd-btn" data-cmd="users --list">Try 'users --list'</button>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="lesson-card">
+                  <div class="lesson-num">03</div>
+                  <div class="lesson-detail">
+                    <h4>Retrieve Signed-In User's Manager</h4>
+                    <p class="lesson-endpoint">GET /v1.0/me/manager</p>
+                    <p class="lesson-desc">Returns the profile of the manager assigned to the signed-in user in Entra ID/Active Directory.</p>
+                    <div class="lesson-meta">
+                      <span class="scope-bubble">User.Read.All</span>
+                      <button class="try-cmd-btn" data-cmd="request GET /me/manager">Try GET /me/manager</button>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="lesson-card">
+                  <div class="lesson-num">04</div>
+                  <div class="lesson-detail">
+                    <h4>List Direct Reports</h4>
+                    <p class="lesson-endpoint">GET /v1.0/me/directReports</p>
+                    <p class="lesson-desc">Returns profiles of organization employees reporting directly to the signed-in user.</p>
+                    <div class="lesson-meta">
+                      <span class="scope-bubble">User.Read.All</span>
+                      <button class="try-cmd-btn" data-cmd="request GET /me/directReports">Try GET /me/directReports</button>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="lesson-card">
+                  <div class="lesson-num">05</div>
+                  <div class="lesson-detail">
+                    <h4>List Tenant Groups</h4>
+                    <p class="lesson-endpoint">GET /v1.0/groups</p>
+                    <p class="lesson-desc">Lists security, distribution, and Microsoft 365 groups configured inside the active directory tenant.</p>
+                    <div class="lesson-meta">
+                      <span class="scope-bubble">Group.Read.All</span>
+                      <button class="try-cmd-btn" data-cmd="groups">Try 'groups'</button>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="lesson-card">
+                  <div class="lesson-num">06</div>
+                  <div class="lesson-detail">
+                    <h4>Query Inbox Outlook Mails</h4>
+                    <p class="lesson-endpoint">GET /v1.0/me/messages</p>
+                    <p class="lesson-desc">Fetches recent email items. Details date received, subjects, and previews.</p>
+                    <div class="lesson-meta">
+                      <span class="scope-bubble">Mail.ReadWrite</span>
+                      <button class="try-cmd-btn" data-cmd="mail --list">Try 'mail --list'</button>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="lesson-card">
+                  <div class="lesson-num">07</div>
+                  <div class="lesson-detail">
+                    <h4>Send Outlook Email</h4>
+                    <p class="lesson-endpoint">POST /v1.0/me/sendMail</p>
+                    <p class="lesson-desc">Sends a real email message to recipients using the mail-sending scope.</p>
+                    <div class="lesson-meta">
+                      <span class="scope-bubble">Mail.Send</span>
+                      <button class="try-cmd-btn" data-cmd="mail --send --to &quot;me&quot; --subject &quot;Hello from GraphShell&quot; --body &quot;This is a test email sent from GraphShell API Sandbox.&quot;">Try Mail Send</button>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="lesson-card">
+                  <div class="lesson-num">08</div>
+                  <div class="lesson-detail">
+                    <h4>Read Calendar Meetings</h4>
+                    <p class="lesson-endpoint">GET /v1.0/me/events</p>
+                    <p class="lesson-desc">Lists calendar appointments and events. Illustrates time-zone mapping and locations.</p>
+                    <div class="lesson-meta">
+                      <span class="scope-bubble">Calendars.ReadWrite</span>
+                      <button class="try-cmd-btn" data-cmd="calendar --list">Try 'calendar --list'</button>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="lesson-card">
+                  <div class="lesson-num">09</div>
+                  <div class="lesson-detail">
+                    <h4>Explore OneDrive Storage Files</h4>
+                    <p class="lesson-endpoint">GET /v1.0/me/drive/root/children</p>
+                    <p class="lesson-desc">Queries OneDrive node children. Displays file name nodes, size bytes, and type classification.</p>
+                    <div class="lesson-meta">
+                      <span class="scope-bubble">Files.ReadWrite</span>
+                      <button class="try-cmd-btn" data-cmd="drive --ls">Try 'drive --ls'</button>
+                    </div>
+                  </div>
+                </div>
+
+              </div>
+
+              <!-- Section 3: Raw Request Sandbox -->
+              <div class="learn-section-divider">
+                <h3>3. Custom API Explorer Sandbox</h3>
+              </div>
+
+              <div class="sandbox-guide-card">
+                <p>Just like the official **Microsoft Graph Explorer**, GraphShell allows you to run <strong>any arbitrary REST request</strong> using the <code>request</code> CLI command. This includes querying beta features, Planner tasks, Microsoft Teams, and more.</p>
+                <div class="sandbox-examples">
+                  <div class="example-row">
+                    <span class="cmd-shortcut" style="cursor: pointer;" onclick="document.getElementById('terminal-input').value = 'request GET /me/joinedTeams'; document.getElementById('terminal-input').focus();">request GET /me/joinedTeams</span>
+                    <span class="example-desc">&rarr; List M365 Joined Teams</span>
+                  </div>
+                  <div class="example-row">
+                    <span class="cmd-shortcut" style="cursor: pointer;" onclick="document.getElementById('terminal-input').value = 'request GET /beta/me'; document.getElementById('terminal-input').focus();">request GET /beta/me</span>
+                    <span class="example-desc">&rarr; Call Beta User Endpoint</span>
+                  </div>
+                  <div class="example-row">
+                    <span class="cmd-shortcut" style="cursor: pointer;" onclick="document.getElementById('terminal-input').value = 'request GET /me/planner/tasks'; document.getElementById('terminal-input').focus();">request GET /me/planner/tasks</span>
+                    <span class="example-desc">&rarr; Fetch Microsoft Planner Tasks</span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Footer Section -->
+              <div data-aos="fade-up" class="footer_main">
+                <div class="footer_Icons">
+                    <span class="footer_git">
+                        <a target="_blank" rel="noreferrer noopener" href="https://github.com/ajf013" aria-label="GitHub">
+                            <svg viewBox="0 0 24 24" style="width: 26px; height: 26px; fill: currentColor; vertical-align: middle;"><path d="M12 2A10 10 0 0 0 2 12c0 4.42 2.87 8.17 6.84 9.5.5.08.66-.23.66-.5v-1.69c-2.77.6-3.36-1.34-3.36-1.34-.46-1.16-1.11-1.47-1.11-1.47-.9-.62.07-.6.07-.6 1 .07 1.53 1.03 1.53 1.03.9 1.52 2.34 1.07 2.91.83.09-.65.35-1.09.63-1.34-2.22-.25-4.55-1.11-4.55-4.92 0-1.11.38-2 1.03-2.71-.1-.25-.45-1.29.1-2.64 0 0 .84-.27 2.75 1.02.79-.22 1.65-.33 2.5-.33.85 0 1.71.11 2.5.33 1.91-1.29 2.75-1.02 2.75-1.02.55 1.35.2 2.39.1 2.64.65.71 1.03 1.6 1.03 2.71 0 3.82-2.34 4.66-4.57 4.91.36.31.69.92.69 1.85V21c0 .27.16.59.67.5C19.14 20.16 22 16.42 22 12A10 10 0 0 0 12 2z"/></svg>
+                        </a>
+                    </span>
+                    <span class="footer_link">
+                        <a target="_blank" rel="noreferrer noopener" href="https://www.linkedin.com/in/ajf013-francis-cruz/" aria-label="LinkedIn">
+                            <svg viewBox="0 0 24 24" style="width: 26px; height: 26px; fill: currentColor; vertical-align: middle;"><path d="M19 3a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h14m-.5 15.5v-5.3a3.26 3.26 0 0 0-3.26-3.26c-.85 0-1.84.52-2.32 1.3v-1.11h-2.79v8.37h2.79v-4.93c0-.77.62-1.4 1.39-1.4a1.4 1.4 0 0 1 1.4 1.4v4.93h2.79M6.88 8.56a1.68 1.68 0 0 0 1.68-1.68c0-.93-.75-1.69-1.68-1.69a1.69 1.69 0 0 0-1.69 1.69c0 .93.76 1.68 1.69 1.68m1.39 9.94v-8.37H5.5v8.37h2.77z"/></svg>
+                        </a>
+                    </span>
+                    <span class="footer_insta">
+                        <a target="_blank" rel="noreferrer noopener" href="https://www.instagram.com/fcruz_013/" aria-label="Instagram">
+                            <svg viewBox="0 0 24 24" style="width: 26px; height: 26px; fill: currentColor; vertical-align: middle;"><path d="M7.8 2h8.4C19.4 2 22 4.6 22 7.8v8.4a5.8 5.8 0 0 1-5.8 5.8H7.8C4.6 22 2 19.4 2 16.2V7.8A5.8 5.8 0 0 1 7.8 2m-.2 2A3.6 3.6 0 0 0 4 7.6v8.8A3.6 3.6 0 0 0 7.6 20h8.8a3.6 3.6 0 0 0 3.6-3.6V7.6A3.6 3.6 0 0 0 16.4 4H7.6m12.4 2.25a.75.75 0 1 1 0 1.5.75.75 0 0 1 0-1.5M12 7a5 5 0 1 1 0 10 5 5 0 0 1 0-10m0 2a3 3 0 1 0 0 6 3 3 0 0 0 0-6z"/></svg>
+                        </a>
+                    </span>
+                    <span class="footer_wht">
+                        <a target="_blank" rel="noreferrer noopener" href="https://api.whatsapp.com/send?phone=916379649461" aria-label="WhatsApp">
+                            <svg viewBox="0 0 24 24" style="width: 26px; height: 26px; fill: currentColor; vertical-align: middle;"><path d="M12.04 2c-5.46 0-9.91 4.45-9.91 9.91 0 1.75.46 3.45 1.32 4.95L2.05 22l5.25-1.38c1.45.79 3.08 1.21 4.74 1.21 5.46 0 9.91-4.45 9.91-9.91 0-2.65-1.03-5.14-2.9-7.01A9.816 9.816 0 0 0 12.04 2zm5.72 14.1c-.24.69-1.42 1.26-1.97 1.3-1.09.09-2.52-.36-4.96-1.37-3.14-1.3-5.14-4.5-5.3-4.7-.16-.2-1.3-1.73-1.3-3.3 0-1.57.81-2.34 1.1-2.65.28-.3.73-.38.97-.38.24 0 .49 0 .7.01.22.01.52-.08.81.62.28.69.97 2.38 1.05 2.54.08.16.14.35.03.56-.11.22-.22.35-.38.54-.16.19-.35.42-.5.57-.16.16-.33.34-.14.67.19.32.85 1.41 1.83 2.29 1.26 1.13 2.32 1.48 2.65 1.65.32.16.52.14.71-.08.19-.22.81-.94 1.03-1.26.22-.32.44-.27.75-.16.3.11 1.93.91 2.26 1.08.32.16.54.24.62.38.08.14.08.82-.16 1.51z"/></svg>
+                        </a>
+                    </span>
+                    <span class="footer_twi">
+                        <a target="_blank" rel="noreferrer noopener" href="https://x.com/Itsme_Ajf013" aria-label="X (formerly Twitter)">
+                            <svg viewBox="0 0 24 24" aria-hidden="true" style="width: 26px; height: 26px; fill: currentColor; vertical-align: middle;"><g><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"></path></g></svg>
+                        </a>
+                    </span>
+                </div>
+                <div class="footer_content">
+                    <span>Copyrights <svg viewBox="0 0 24 24" style="width: 16px; height: 16px; fill: currentColor; vertical-align: middle; margin-right: 2px;"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm0-13c-2.76 0-5 2.24-5 5s2.24 5 5 5c1.92 0 3.58-1.08 4.41-2.65l-1.74-.87c-.52.95-1.52 1.52-2.67 1.52-1.66 0-3-1.34-3-3s1.34-3 3-3c1.15 0 2.15.57 2.67 1.52l1.74-.87C15.58 8.08 13.92 7 12 7z"/></svg> 2026 <strong>Francis Cruz</strong></span>
+                </div>
+              </div>
+
+            </div>
+          </div>
+
+          <!-- Visual Explorer Panel -->
+          <div class="tab-panel" id="panel-visual">
+            <div class="panel-placeholder" id="visual-content-area">
+              <div class="empty-state">
+                <img src="logo.png" alt="GraphShell Logo" class="pulse-icon" style="width: 64px; height: 64px; border-radius: 12px; box-shadow: 0 0 20px rgba(0, 240, 255, 0.2); margin-bottom: 16px;">
+                <h3>Waiting for Command</h3>
+                <p>Run a directory command in the shell to visualize results here. Try <code class="cmd-shortcut">me</code>, <code class="cmd-shortcut">users --list</code>, or <code class="cmd-shortcut">mail --list</code>.</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- JSON Inspector Panel -->
+          <div class="tab-panel" id="panel-json">
+            <div class="json-header">
+              <span class="json-url" id="json-endpoint-display">GET /v1.0/me</span>
+              <button class="copy-btn" id="copy-json-btn">Copy Payload</button>
+            </div>
+            <pre class="json-code-block"><code id="json-output-area">{
+  "@odata.context": "https://graph.microsoft.com/v1.0/$metadata#users/$entity",
+  "id": "mock-user-id-000",
+  "displayName": "System Admin",
+  "givenName": "System",
+  "surname": "Admin",
+  "userPrincipalName": "admin@contoso.onmicrosoft.com",
+  "jobTitle": "Tenant Administrator",
+  "mail": "admin@contoso.onmicrosoft.com",
+  "mobilePhone": null,
+  "officeLocation": "Building 1"
+}</code></pre>
+          </div>
+
+          <!-- AI Copilot Panel -->
+          <div class="tab-panel" id="panel-ai">
+            <div class="ai-chat-container">
+              <div class="ai-chat-messages" id="ai-chat-log">
+                <div class="ai-msg assistant">
+                  <div class="msg-avatar">AI</div>
+                  <div class="msg-content">
+                    <p>Hello! I am your Microsoft Graph Azure AI Copilot. How can I help you today?</p>
+                    <p>You can ask me things like:</p>
+                    <ul>
+                      <li><a href="#" class="ai-suggestion">"Show all users in the marketing department"</a></li>
+                      <li><a href="#" class="ai-suggestion">"Draft an email to Adele Vance"</a></li>
+                      <li><a href="#" class="ai-suggestion">"What is on my calendar today?"</a></li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+              <div class="ai-chat-input-area">
+                <input type="text" id="ai-chat-input" placeholder="Ask AI to query MS Graph..." autocomplete="off">
+                <button id="ai-chat-send-btn">
+                  <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>
+                </button>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </section>
+
+    </main>
+
+    <!-- Settings Overlay Drawer -->
+    <div class="settings-overlay" id="settings-modal">
+      <div class="settings-card">
+        <div class="settings-card-header">
+          <h2>GraphShell Configurations</h2>
+          <button class="close-settings-btn" id="close-settings-btn">&times;</button>
+        </div>
+        <div class="settings-card-body">
+          
+          <div class="settings-section" id="msal-fields-container">
+            <h3>Microsoft Entra Credentials</h3>
+            <div class="settings-group">
+              <label for="msal-client-id">Application (client) ID</label>
+              <input type="text" id="msal-client-id" value="8814eadb-592a-4da9-be40-94a8fb602420">
+            </div>
+            <div class="settings-group">
+              <label for="msal-tenant-id">Directory (tenant) ID</label>
+              <input type="text" id="msal-tenant-id" value="common">
+            </div>
+            <p class="settings-note">Configured with GraphShell App registration running on localhost:8080. Tenant 'common' allows any personal, work, or school Microsoft accounts to log in.</p>
+          </div>
+
+          <div class="settings-section">
+            <h3>Azure AI / OpenAI Integration</h3>
+            <div class="settings-group">
+              <label for="ai-endpoint">Azure AI Endpoint</label>
+              <input type="text" id="ai-endpoint" placeholder="https://YOUR-RESOURCE.openai.azure.com/">
+            </div>
+            <div class="settings-group">
+              <label for="ai-deployment">Model Deployment Name</label>
+              <input type="text" id="ai-deployment" placeholder="e.g. gpt-4o, gpt-35-turbo">
+            </div>
+            <div class="settings-group">
+              <label for="ai-api-key">Azure API Key</label>
+              <input type="password" id="ai-api-key" placeholder="Enter Azure OpenAI API Key...">
+            </div>
+            <p class="settings-note">Configure Azure OpenAI to translate natural language inputs directly into shell commands. If left blank, a simulated local rule parser is used.</p>
+          </div>
+
+          <div class="settings-section">
+            <h3>Session Management</h3>
+            <button class="danger-btn" id="reset-db-btn">Clear Auth Cache & Command History</button>
+          </div>
+
+        </div>
+        <div class="settings-card-footer">
+          <button class="btn secondary-btn" id="cancel-settings-btn">Cancel</button>
+          <button class="btn primary-btn" id="save-settings-btn">Save Configurations</button>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- MSAL and application scripts -->
+  <script src="https://alcdn.msauth.net/browser/2.35.0/js/msal-browser.min.js"></script>
+  <script type="module" src="app.js"></script>
+</body>
+</html>
