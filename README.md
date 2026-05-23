@@ -89,12 +89,12 @@ GraphShell is optimized for speed, security, and visuals by running fully client
 
 | Technology | Layer | Version / Source | Description |
 | :--- | :--- | :--- | :--- |
-| ![HTML5](https://img.shields.io/badge/HTML5-E34F26?style=flat-square&logo=html5&logoColor=white) **HTML5** | Core Markup | Living Standard | Semantic document outline with a responsive dual-pane flex layout. |
-| ![CSS3](https://img.shields.io/badge/CSS3-1572B6?style=flat-square&logo=css3&logoColor=white) **Vanilla CSS** | Styling System | CSS3 / Custom Variables | Custom CRT scanner styling, glassmorphism overlays, and dark-mode gradients. |
-| ![JavaScript](https://img.shields.io/badge/JavaScript-F7DF1E?style=flat-square&logo=javascript&logoColor=black) **Vanilla JavaScript** | Logic / Controller | ES6+ Modules | Event handling, state management, and async fetch operations. |
-| ![Microsoft](https://img.shields.io/badge/Microsoft_Entra-0078D4?style=flat-square&logo=microsoft&logoColor=white) **MSAL Browser** | Authentication | `v2.35.0` (CDN) | Microsoft Authentication Library for secure Entra ID OAuth sign-ins. |
-| ![Azure](https://img.shields.io/badge/Azure_OpenAI-0089D6?style=flat-square&logo=microsoftazure&logoColor=white) **Azure OpenAI** | AI Engine | `gpt-4.1-mini` (2025-04-14) | Cognitive model deployment for natural language CLI routing. |
-| ![Google](https://img.shields.io/badge/Google_Fonts-4285F4?style=flat-square&logo=google&logoColor=white) **Google Fonts** | Typography | `Inter` & `Fira Code` | Modern UI typography and fixed-width command typography. |
+| ![HTML5](https://img.shields.io/badge/HTML5-E34F26?style=flat-square&logo=html5&logoColor=white) | Core Markup | Living Standard | Semantic document outline with a responsive dual-pane flex layout. |
+| ![CSS3](https://img.shields.io/badge/CSS3-1572B6?style=flat-square&logo=css3&logoColor=white) | Styling System | CSS3 / Custom Variables | Custom CRT scanner styling, glassmorphism overlays, and dark-mode gradients. |
+| ![JavaScript](https://img.shields.io/badge/JavaScript-F7DF1E?style=flat-square&logo=javascript&logoColor=black) | Logic / Controller | ES6+ Modules | Event handling, state management, and async fetch operations. |
+| ![Microsoft](https://img.shields.io/badge/Microsoft_Entra-0078D4?style=flat-square&logo=microsoft&logoColor=white)| Authentication | `v2.35.0` (CDN) | Microsoft Authentication Library for secure Entra ID OAuth sign-ins. |
+| ![Azure](https://img.shields.io/badge/Azure_OpenAI-0089D6?style=flat-square&logo=microsoftazure&logoColor=white)| AI Engine | `gpt-4.1-mini` (2025-04-14) | Cognitive model deployment for natural language CLI routing. |
+| ![Google](https://img.shields.io/badge/Google_Fonts-4285F4?style=flat-square&logo=google&logoColor=white)| Typography | `Inter` & `Fira Code` | Modern UI typography and fixed-width command typography. |
 
 ---
 
