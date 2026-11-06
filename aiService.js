@@ -1,5 +1,5 @@
 const DEFAULT_AI_ENDPOINT = 'https://cog-graphshell-ai-4a27a.openai.azure.com/';
-const DEFAULT_AI_DEPLOYMENT = 'gpt-4-mini';
+const DEFAULT_AI_DEPLOYMENT = 'gpt-5-mini';
 const DEFAULT_AI_KEY = '';
 
 // Helper to load Azure OpenAI credentials

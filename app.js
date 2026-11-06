@@ -5,7 +5,7 @@ import { runAiPrompt } from './aiService.js';
 const DEFAULT_CLIENT_ID = '8814eadb-592a-4da9-be40-94a8fb602420';
 const DEFAULT_TENANT_ID = 'common';
 const DEFAULT_AI_ENDPOINT = 'https://cog-graphshell-ai-4a27a.openai.azure.com/';
-const DEFAULT_AI_DEPLOYMENT = 'gpt-4-mini';
+const DEFAULT_AI_DEPLOYMENT = 'gpt-5-mini';
 const DEFAULT_AI_KEY = '';
 
 // MSAL Instance reference
